@@ -85,6 +85,11 @@ The 128-dimensional SIFT keypoints were visualized in 2D using t-SNE. This provi
    ```bash
    python final.py
    ```
+## Installation
+
+Create a conda environmnet with Python3.5 and install dependencies
+
+Install [cyvlfeat](https://github.com/menpo/cyvlfeat) by running conda install -c menpo cyvlfeat
 
 ## Outputs
 
