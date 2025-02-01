@@ -78,7 +78,7 @@ The 128-dimensional SIFT keypoints were visualized in 2D using t-SNE. This provi
 
 2. Navigate to the directory:
    ```bash
-   cd Scene-Recognition-with-Bag-of-Words/code
+   cd Assignment1_Scene-Recognition-with-Bag-of-Words/code
    ```
 
 3. Run the script:

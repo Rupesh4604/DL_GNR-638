@@ -209,7 +209,9 @@ def main():
     
     # flag is set to true if you want to train the model again
     Flag = 'False'
-    
+    # Set the Multi_SVM_Classify to True if you want to experiment with different SVM kernels
+    Multi_SVM_Classify = False
+
     for vocab_size in vocab_sizes:
         print("Vocabulary size: ", vocab_size)
         
@@ -295,55 +297,56 @@ def main():
     plt.savefig('accuracy_vs_vocab_size.png')
     plt.show()
 
-# Step 3: Classify using multi-class SVM
-    print("Classifying using multi-class SVM...")
-    pred_label_linear, pred_label_poly, pred_label_rbf, pred_label_sigmoid = svm_multi_classify(train_image_feats, train_labels, test_image_feats)
-        
-    # bar graph for multi-class SVM
-    accuracy_linear_svc = []
-    accuracy_poly_svc = []
-    accuracy_rbf_svc = []
-    accuracy_sigmoid_svc = []
-    for category in CATEGORIES:
-        category_correct_linear = sum(1 for x, y in zip(test_labels, pred_label_linear) if x == y and x == category)
-        category_total_linear = test_labels.count(category)
-        category_accuracy_linear = category_correct_linear / category_total_linear if category_total_linear > 0 else 0
-        accuracy_linear_svc.append(category_accuracy_linear)
+    if Multi_SVM_Classify == True:
+        # Step 3: Classify using multi-class SVM
+        print("Classifying using multi-class SVM...")
+        pred_label_linear, pred_label_poly, pred_label_rbf, pred_label_sigmoid = svm_multi_classify(train_image_feats, train_labels, test_image_feats)
             
-        category_correct_poly = sum(1 for x, y in zip(test_labels, pred_label_poly) if x == y and x == category)
-        category_total_poly = test_labels.count(category)
-        category_accuracy_poly = category_correct_poly / category_total_poly if category_total_poly > 0 else 0
-        accuracy_poly_svc.append(category_accuracy_poly)
-            
-        category_correct_rbf = sum(1 for x, y in zip(test_labels, pred_label_rbf) if x == y and x == category)
-        category_total_rbf = test_labels.count(category)
-        category_accuracy_rbf = category_correct_rbf / category_total_rbf if category_total_rbf > 0 else 0
-        accuracy_rbf_svc.append(category_accuracy_rbf)
-            
-        category_correct_sigmoid = sum(1 for x, y in zip(test_labels, pred_label_sigmoid) if x == y and x == category)
-        category_total_sigmoid = test_labels.count(category)
-        category_accuracy_sigmoid = category_correct_sigmoid / category_total_sigmoid if category_total_sigmoid > 0 else 0
-        accuracy_sigmoid_svc.append(category_accuracy_sigmoid)
-            
-    # plot the bar graph
-    fig, ax = plt.subplots()
-    bar_width = 0.2
-    index = np.arange(len(CATEGORIES))
-    opacity = 0.8
-    ax.bar(index, accuracy_linear_svc, bar_width, alpha=opacity, color='b', label='Linear SVC')
-    ax.bar(index + bar_width, accuracy_poly_svc, bar_width, alpha=opacity, color='g', label='Poly SVC')
-    ax.bar(index + 2*bar_width, accuracy_rbf_svc, bar_width, alpha=opacity, color='r', label='RBF SVC')
-    ax.bar(index + 3*bar_width, accuracy_sigmoid_svc, bar_width, alpha=opacity, color='y', label='Sigmoid SVC')
-    ax.set_xlabel('Categories')
-    ax.set_ylabel('Accuracy')
-    ax.set_title('Accuracy of Multi-class SVM')
-    ax.set_xticks(index + bar_width)
-    ax.set_xticklabels(CATEGORIES)
-    ax.legend()
-    plt.xticks(rotation=90)
-    plt.tight_layout()
-    plt.savefig('accuracy_multi_class_svm.png')
-    plt.show()
+        # bar graph for multi-class SVM
+        accuracy_linear_svc = []
+        accuracy_poly_svc = []
+        accuracy_rbf_svc = []
+        accuracy_sigmoid_svc = []
+        for category in CATEGORIES:
+            category_correct_linear = sum(1 for x, y in zip(test_labels, pred_label_linear) if x == y and x == category)
+            category_total_linear = test_labels.count(category)
+            category_accuracy_linear = category_correct_linear / category_total_linear if category_total_linear > 0 else 0
+            accuracy_linear_svc.append(category_accuracy_linear)
+                
+            category_correct_poly = sum(1 for x, y in zip(test_labels, pred_label_poly) if x == y and x == category)
+            category_total_poly = test_labels.count(category)
+            category_accuracy_poly = category_correct_poly / category_total_poly if category_total_poly > 0 else 0
+            accuracy_poly_svc.append(category_accuracy_poly)
+                
+            category_correct_rbf = sum(1 for x, y in zip(test_labels, pred_label_rbf) if x == y and x == category)
+            category_total_rbf = test_labels.count(category)
+            category_accuracy_rbf = category_correct_rbf / category_total_rbf if category_total_rbf > 0 else 0
+            accuracy_rbf_svc.append(category_accuracy_rbf)
+                
+            category_correct_sigmoid = sum(1 for x, y in zip(test_labels, pred_label_sigmoid) if x == y and x == category)
+            category_total_sigmoid = test_labels.count(category)
+            category_accuracy_sigmoid = category_correct_sigmoid / category_total_sigmoid if category_total_sigmoid > 0 else 0
+            accuracy_sigmoid_svc.append(category_accuracy_sigmoid)
+                
+        # plot the bar graph
+        fig, ax = plt.subplots()
+        bar_width = 0.2
+        index = np.arange(len(CATEGORIES))
+        opacity = 0.8
+        ax.bar(index, accuracy_linear_svc, bar_width, alpha=opacity, color='b', label='Linear SVC')
+        ax.bar(index + bar_width, accuracy_poly_svc, bar_width, alpha=opacity, color='g', label='Poly SVC')
+        ax.bar(index + 2*bar_width, accuracy_rbf_svc, bar_width, alpha=opacity, color='r', label='RBF SVC')
+        ax.bar(index + 3*bar_width, accuracy_sigmoid_svc, bar_width, alpha=opacity, color='y', label='Sigmoid SVC')
+        ax.set_xlabel('Categories')
+        ax.set_ylabel('Accuracy')
+        ax.set_title('Accuracy of Multi-class SVM')
+        ax.set_xticks(index + bar_width)
+        ax.set_xticklabels(CATEGORIES)
+        ax.legend()
+        plt.xticks(rotation=90)
+        plt.tight_layout()
+        plt.savefig('accuracy_multi_class_svm.png')
+        plt.show()
 
 
 if __name__ == '__main__':
