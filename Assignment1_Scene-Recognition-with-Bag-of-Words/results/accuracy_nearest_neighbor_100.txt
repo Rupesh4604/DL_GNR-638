@@ -1,0 +1,22 @@
+Overall Accuracy = 0.71
+agricultural: 0.65
+airplane: 0.50
+baseballdiamond: 0.65
+beach: 0.90
+buildings: 0.40
+chaparral: 0.95
+denseresidential: 0.60
+forest: 0.90
+freeway: 0.75
+golfcourse: 0.85
+harbor: 0.80
+intersection: 0.80
+mediumresidential: 0.65
+mobilehomepark: 0.75
+overpass: 0.50
+parkinglot: 0.80
+river: 0.65
+runway: 0.95
+sparseresidential: 0.65
+storagetanks: 0.65
+tenniscourt: 0.60

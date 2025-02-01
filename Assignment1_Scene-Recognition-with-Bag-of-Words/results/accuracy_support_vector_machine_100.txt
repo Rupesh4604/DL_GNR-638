@@ -1,0 +1,25 @@
+Overall Accuracy = 0.66
+agricultural: 0.35
+airplane: 0.60
+baseballdiamond: 0.85
+beach: 0.95
+buildings: 0.60
+chaparral: 0.95
+denseresidential: 0.70
+forest: 0.95
+freeway: 0.55
+golfcourse: 0.70
+harbor: 0.90
+intersection: 0.70
+mediumresidential: 0.40
+mobilehomepark: 0.70
+overpass: 0.50
+parkinglot: 0.90
+river: 0.25
+runway: 0.85
+sparseresidential: 0.35
+storagetanks: 0.55
+tenniscourt: 0.55
+
+ConvergenceWarning: Liblinear failed to converge, increase the number of iterations.
+  "the number of iterations.", ConvergenceWarning
