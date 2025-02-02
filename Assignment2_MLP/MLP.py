@@ -14,7 +14,10 @@ import matplotlib.pyplot as plt
 CATEGORIES = ['agricultural', 'airplane', 'baseballdiamond', 'beach', 'buildings', 'chaparral', 'denseresidential',
               'forest', 'freeway', 'golfcourse', 'harbor', 'intersection', 'mediumresidential', 'mobilehomepark',
               'overpass', 'parkinglot', 'river', 'runway', 'sparseresidential', 'storagetanks', 'tenniscourt']
-CATE2ID = {v: k for k, v in enumerate(CATEGORIES)}
+
+# Global label encoder for consistency across datasets
+label_encoder = LabelEncoder()
+label_encoder.fit(CATEGORIES)
 
 # Device configuration
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -24,41 +27,41 @@ data_dir = '../data/'
 
 # Custom Dataset for loading and processing images
 class ImageDataset(Dataset):
-    def __init__(self, data_dir, split='train', transform=None):
+    def __init__(self, data_dir, split='train'):
         self.data_dir = data_dir
         self.split = split
-        self.transform = transform
         self.images = []
         self.labels = []
-        
+
         # Loop over categories to collect images
         for label in CATEGORIES:
             category_dir = os.path.join(data_dir, split, label)
+            if not os.path.exists(category_dir):  # Skip if directory does not exist
+                continue
             for img_name in os.listdir(category_dir):
-                if img_name.endswith(".jpg"):  # Assuming the images are in .tif format
+                if img_name.endswith(".jpg"):  # Assuming the images are in .jpg format
                     img_path = os.path.join(category_dir, img_name)
                     self.images.append(img_path)
                     self.labels.append(label)
-        
-        # Label encoding
-        self.label_encoder = LabelEncoder()
-        self.labels = self.label_encoder.fit_transform(self.labels)  # Convert labels to integers
-        
+
+        # Convert labels to integers using the global label encoder
+        self.labels = label_encoder.transform(self.labels)
+
     def __len__(self):
         return len(self.images)
-    
+
     def __getitem__(self, idx):
         # Load and preprocess image
         img_path = self.images[idx]
-        # img = Image.open(img_path).convert('L')  # Convert to grayscale
-        img = img.resize((72, 72)) 
-        img = np.array(img, dtype=np.float32) 
-        img = img.flatten() 
-        
+        img = Image.open(img_path)
+        img = img.resize((72, 72))
+        img = np.array(img, dtype=np.float32) / 255.0  # Normalize pixel values
+        img = img.flatten()
+
         # Convert to tensor
         img = torch.tensor(img, dtype=torch.float32)
         label = torch.tensor(self.labels[idx], dtype=torch.long)
-        
+
         return img, label
 
 # Create datasets
@@ -74,22 +77,21 @@ test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
 # Define the MLP Model
 class MLP(nn.Module):
-    def __init__(self, input_size=72*72, hidden_size1=128, hidden_size2=64, num_classes=21):
+    def __init__(self, input_size=72*72, hidden_size1=128, hidden_size2=64, num_classes=len(CATEGORIES)):
         super(MLP, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size1)
         self.fc2 = nn.Linear(hidden_size1, hidden_size2)
         self.fc3 = nn.Linear(hidden_size2, num_classes)
         self.relu = nn.ReLU()
-        self.softmax = nn.LogSoftmax(dim=1)
 
     def forward(self, x):
         x = self.relu(self.fc1(x))
         x = self.relu(self.fc2(x))
-        x = self.fc3(x)
-        return self.softmax(x)
+        x = self.fc3(x)  # No softmax, as CrossEntropyLoss includes it
+        return x
 
 # Instantiate and move the model to the device
-model = MLP(input_size=72*72, hidden_size1=128, hidden_size2=64, num_classes=len(CATEGORIES)).to(device)
+model = MLP().to(device)
 
 # Define loss function and optimizer
 criterion = nn.CrossEntropyLoss()
@@ -109,6 +111,8 @@ for epoch in range(num_epochs):
     for batch_X, batch_y in train_loader:
         batch_X, batch_y = batch_X.to(device), batch_y.to(device)
 
+        batch_X = batch_X.view(batch_X.size(0), -1)  # Flatten input
+
         optimizer.zero_grad()
         outputs = model(batch_X)
         loss = criterion(outputs, batch_y)
@@ -122,6 +126,7 @@ for epoch in range(num_epochs):
     with torch.no_grad():
         for batch_X, batch_y in val_loader:
             batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+            batch_X = batch_X.view(batch_X.size(0), -1)  # Flatten input
             outputs = model(batch_X)
             _, predicted = torch.max(outputs, 1)
             total += batch_y.size(0)
@@ -149,6 +154,7 @@ true_labels = []
 with torch.no_grad():
     for batch_X, batch_y in test_loader:
         batch_X, batch_y = batch_X.to(device), batch_y.to(device)
+        batch_X = batch_X.view(batch_X.size(0), -1)  # Flatten input
         outputs = model(batch_X)
         _, predicted = torch.max(outputs, 1)
         total += batch_y.size(0)
@@ -160,7 +166,10 @@ test_accuracy = correct / total
 print(f"Test Accuracy: {test_accuracy:.4f}")
 
 # Confusion Matrix
-cm = confusion_matrix(true_labels, predictions)
+decoded_predictions = label_encoder.inverse_transform(predictions)
+decoded_true_labels = label_encoder.inverse_transform(true_labels)
+
+cm = confusion_matrix(decoded_true_labels, decoded_predictions, labels=CATEGORIES)
 print("Confusion Matrix:")
 print(cm)
 
