@@ -35,7 +35,7 @@ class ImageDataset(Dataset):
         for label in CATEGORIES:
             category_dir = os.path.join(data_dir, split, label)
             for img_name in os.listdir(category_dir):
-                if img_name.endswith(".tif"):  # Assuming the images are in .tif format
+                if img_name.endswith(".jpg"):  # Assuming the images are in .tif format
                     img_path = os.path.join(category_dir, img_name)
                     self.images.append(img_path)
                     self.labels.append(label)
@@ -50,7 +50,7 @@ class ImageDataset(Dataset):
     def __getitem__(self, idx):
         # Load and preprocess image
         img_path = self.images[idx]
-        img = Image.open(img_path).convert('L')  # Convert to grayscale
+        # img = Image.open(img_path).convert('L')  # Convert to grayscale
         img = img.resize((72, 72)) 
         img = np.array(img, dtype=np.float32) 
         img = img.flatten() 
