@@ -77,18 +77,22 @@ test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
 # Define the MLP Model
 class MLP(nn.Module):
-    def __init__(self, input_size=72*72, hidden_size1=128, hidden_size2=64, num_classes=len(CATEGORIES)):
+    def __init__(self, input_size=72*72, hidden_size1=512, hidden_size2=256, num_classes=len(CATEGORIES)):
         super(MLP, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size1)
         self.fc2 = nn.Linear(hidden_size1, hidden_size2)
         self.fc3 = nn.Linear(hidden_size2, num_classes)
         self.relu = nn.ReLU()
-
+        self.dropout = nn.Dropout(p=0.5)
+        
     def forward(self, x):
         x = self.relu(self.fc1(x))
+        x = self.dropout(x)
         x = self.relu(self.fc2(x))
-        x = self.fc3(x)  # No softmax, as CrossEntropyLoss includes it
+        x = self.dropout(x)
+        x = self.fc3(x)
         return x
+
 
 # Instantiate and move the model to the device
 model = MLP().to(device)
