@@ -6,6 +6,9 @@ import torch.optim as optim
 from sklearn.model_selection import train_test_split
 from torch.utils.data import DataLoader, TensorDataset
 import numpy as np
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Define categories
 CATEGORIES = ['agricultural', 'airplane', 'baseballdiamond', 'beach', 'buildings', 'chaparral', 'denseresidential',
@@ -125,11 +128,13 @@ for epoch in range(num_epochs):
 # Save the final model (even if it's not the best)
 torch.save(model.state_dict(), "mlp_scene_recognition_final.pth")
 
-# Evaluate on Test Set
 model.load_state_dict(torch.load("mlp_scene_recognition_best.pth"))
 model.eval()
 
 correct, total = 0, 0
+predictions = []
+true_labels = []
+
 with torch.no_grad():
     for batch_X, batch_y in test_loader:
         batch_X, batch_y = batch_X.to(device), batch_y.to(device)
@@ -137,6 +142,23 @@ with torch.no_grad():
         _, predicted = torch.max(outputs, 1)
         total += batch_y.size(0)
         correct += (predicted == batch_y).sum().item()
+        predictions.extend(predicted.cpu().numpy())
+        true_labels.extend(batch_y.cpu().numpy())
 
 test_accuracy = correct / total
 print(f"Test Accuracy: {test_accuracy:.4f}")
+
+# Confusion Matrix
+cm = confusion_matrix(true_labels, predictions)
+print("Confusion Matrix:")
+print(cm)
+
+# Plot Confusion Matrix using Seaborn
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=CATEGORIES, yticklabels=CATEGORIES)
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.savefig("confusion_matrix.png")
+plt.show()
+

@@ -6,6 +6,9 @@ from torch.utils.data import DataLoader, Dataset
 from PIL import Image
 import numpy as np
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import confusion_matrix
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 # Define categories (same as UC Merced)
 CATEGORIES = ['agricultural', 'airplane', 'baseballdiamond', 'beach', 'buildings', 'chaparral', 'denseresidential',
@@ -17,7 +20,7 @@ CATE2ID = {v: k for k, v in enumerate(CATEGORIES)}
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Image data directory
-data_dir = 'data/'
+data_dir = '../data/'
 
 # Custom Dataset for loading and processing images
 class ImageDataset(Dataset):
@@ -140,6 +143,9 @@ model.load_state_dict(torch.load("mlp_scene_recognition_best.pth"))
 model.eval()
 
 correct, total = 0, 0
+predictions = []
+true_labels = []
+
 with torch.no_grad():
     for batch_X, batch_y in test_loader:
         batch_X, batch_y = batch_X.to(device), batch_y.to(device)
@@ -147,6 +153,22 @@ with torch.no_grad():
         _, predicted = torch.max(outputs, 1)
         total += batch_y.size(0)
         correct += (predicted == batch_y).sum().item()
+        predictions.extend(predicted.cpu().numpy())
+        true_labels.extend(batch_y.cpu().numpy())
 
 test_accuracy = correct / total
 print(f"Test Accuracy: {test_accuracy:.4f}")
+
+# Confusion Matrix
+cm = confusion_matrix(true_labels, predictions)
+print("Confusion Matrix:")
+print(cm)
+
+# Plot Confusion Matrix using Seaborn
+plt.figure(figsize=(10, 8))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=CATEGORIES, yticklabels=CATEGORIES)
+plt.xlabel('Predicted')
+plt.ylabel('True')
+plt.title('Confusion Matrix')
+plt.savefig("confusion_matrix.png")
+plt.show()
