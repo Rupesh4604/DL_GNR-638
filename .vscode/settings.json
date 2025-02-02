@@ -1,5 +1,0 @@
-{
-    "python.analysis.extraPaths": [
-        "./Assignment1_Scene-Recognition-with-Bag-of-Words/code"
-    ]
-}
