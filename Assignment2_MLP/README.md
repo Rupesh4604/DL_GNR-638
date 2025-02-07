@@ -74,3 +74,5 @@ pip install torch torchvision numpy scikit-learn matplotlib pillow opencv-python
 - The model will output training and validation loss and accuracy after each epoch.
 - The final trained model weights will be saved as `mlp_scene_recognition.pth`.
 - Optionally, the confusion matrix for the test set is generated to provide insight into model performance for each class.
+
+[confusion matrix](!data/confusion_matrix_bow.png)
