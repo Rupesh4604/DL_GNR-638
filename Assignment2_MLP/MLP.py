@@ -23,7 +23,7 @@ label_encoder.fit(CATEGORIES)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 # Image data directory
-data_dir = '../data/'
+data_dir = 'data/'
 
 # Custom Dataset for loading and processing images
 class ImageDataset(Dataset):
