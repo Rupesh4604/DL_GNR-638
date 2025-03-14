@@ -20,13 +20,16 @@ Each optimizer configuration is treated as a separate experiment, run sequential
 - **Sequential Experiments**: Runs one experiment at a time to ensure stability and data persistence.
 - **Visualization**: Generates loss curves for comparison across optimizers.
 
-## Plots 
+## Plots
 
-![](Assignment4_optimizers_and_Loss_functions/epoch_loss.png)
-Loss per Epoch
+- **Loss per Epoch**  
+  Displays the average loss for each epoch across all experiments.  
+  ![Loss per Epoch](Assignment4_optimizers_and_Loss_functions/epoch_loss.png)
 
-![](Assignment4_optimizers_and_Loss_functions/batch_loss.png)
-Batch Loss
+- **Batch Loss**  
+  Shows the loss for every 10th batch during training, providing insight into convergence behavior within epochs.  
+  ![Batch Loss](Assignment4_optimizers_and_Loss_functions/batch_loss.png)
 
-![](Assignment4_optimizers_and_Loss_functions/training_time.png)
-Total training Time
+- **Total Training Time**  
+  Compares the total time taken (in seconds) for each optimizer configuration to complete 10 epochs.  
+  ![Total Training Time](Assignment4_optimizers_and_Loss_functions/training_time.png)
