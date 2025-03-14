@@ -22,11 +22,11 @@ Each optimizer configuration is treated as a separate experiment, run sequential
 
 ## Plots 
 
-![](Assignment4_optimizers_and_Loss_functions/epoch_loss)
+![](Assignment4_optimizers_and_Loss_functions/epoch_loss.png)
 Loss per Epoch
 
-![](Assignment4_optimizers_and_Loss_functions/batch_loss)
+![](Assignment4_optimizers_and_Loss_functions/batch_loss.png)
 Batch Loss
 
-![](Assignment4_optimizers_and_Loss_functions/training_time)
+![](Assignment4_optimizers_and_Loss_functions/training_time.png)
 Total training Time
