@@ -24,12 +24,15 @@ Each optimizer configuration is treated as a separate experiment, run sequential
 
 - **Loss per Epoch**  
   Displays the average loss for each epoch across all experiments.  
-  ![Loss per Epoch](Assignment4_optimizers_and_Loss_functions/epoch_loss.png)
+
+  ![Loss per Epoch](epoch_loss.png)
 
 - **Batch Loss**  
-  Shows the loss for every 10th batch during training, providing insight into convergence behavior within epochs.  
-  ![Batch Loss](Assignment4_optimizers_and_Loss_functions/batch_loss)
+  Shows the loss for every 10th batch during training, providing insight into convergence behavior within epochs.
+  
+  ![Batch Loss](batch_loss)
 
 - **Total Training Time**  
   Compares the total time taken (in seconds) for each optimizer configuration to complete 10 epochs.  
-  ![Total Training Time](Assignment4_optimizers_and_Loss_functions/training_time.png)
+
+  ![Total Training Time](training_time.png)
