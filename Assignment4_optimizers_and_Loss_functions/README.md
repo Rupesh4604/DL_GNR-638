@@ -30,7 +30,7 @@ Each optimizer configuration is treated as a separate experiment, run sequential
 - **Batch Loss**  
   Shows the loss for every 10th batch during training, providing insight into convergence behavior within epochs.
   
-  ![Batch Loss](batch_loss)
+  ![Batch Loss](batch_loss.png)
 
 - **Total Training Time**  
   Compares the total time taken (in seconds) for each optimizer configuration to complete 10 epochs.  
